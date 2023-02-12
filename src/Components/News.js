@@ -14,8 +14,7 @@ export class News extends Component {
 
   async componentDidMount() {
     // console.log("cdm")
-    let url =
-      "https://newsapi.org/v2/top-headlines?country=in&apiKey=f0fe2da4e36049918676b467b5c2a966&page=1&pagesize=15";
+    let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=f0fe2da4e36049918676b467b5c2a966&page=1&pageSize=${this.props.pagesize}`;
     let data = await fetch(url);
     let parsedData = await data.json();
     console.log(parsedData);
@@ -28,7 +27,7 @@ export class News extends Component {
   handlePrevClick = async () => {
     let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=f0fe2da4e36049918676b467b5c2a966&page=${
       this.state.page - 1
-    }&pagesize=15`;
+    }&pagesize=${this.props.pagesize}`;
     let data = await fetch(url);
     let parsedData = await data.json();
     console.log(parsedData);
@@ -38,11 +37,14 @@ export class News extends Component {
     });
   };
   handleNextClick = async () => {
-    if (this.state.page + 1 > Math.ceil(this.state.totalResults / 15)) {
+    if (
+      this.state.page + 1 >
+      Math.ceil(this.state.totalResults / this.props.pagesize)
+    ) {
     } else {
       let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=f0fe2da4e36049918676b467b5c2a966&page=${
         this.state.page + 1
-      }&pagesize=15`;
+      }&pagesize=${this.props.pagesize}`;
       let data = await fetch(url);
       let parsedData = await data.json();
       console.log(parsedData);
@@ -55,7 +57,7 @@ export class News extends Component {
   render() {
     return (
       <div className="container my-3 mb-4">
-        <h1>NewsWala - Top Headlines</h1>
+        <h1 className="text-center">NewsWala - Top Headlines</h1>
 
         <div className="row">
           {this.state.articles.map((element) => {
@@ -86,6 +88,10 @@ export class News extends Component {
           </button>
           <button
             type="button"
+            disabled={
+              this.state.page + 1 >
+              Math.ceil(this.state.totalResults / this.props.pagesize)
+            }
             className="btn btn-dark"
             onClick={this.handleNextClick}
           >
